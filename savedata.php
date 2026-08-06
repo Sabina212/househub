@@ -47,4 +47,5 @@ else
     header("Location: register.php");
     exit();
 }
+echo " his is the change file" ;
 ?>
