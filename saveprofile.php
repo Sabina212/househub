@@ -38,7 +38,7 @@ if(isset($_POST['username']))
     {
         echo "<script>
                 alert('Profile Saved Successfully');
-                window.location='portfolio.php';
+                window.location='certificate.php';
               </script>";
     }
     else
