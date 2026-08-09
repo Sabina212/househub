@@ -9,7 +9,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-
     // Check empty fields
 
     if (empty($email) || empty($password)) {
@@ -72,13 +71,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Redirect according to role
 
             if ($user['role'] == 'customer') {
-
-                header("Location: dashboard-user.php");
+                header("Location:dashboard-user.php");
                 exit();
-
             }
-
-
             elseif ($user['role'] == 'provider') {
 
                 header("Location:dashboard-provider.php");

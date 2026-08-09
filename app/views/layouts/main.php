@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 // Main HouseHub layout.
 // $title and $content are supplied by the view.
 $title = $title ?? 'HouseHub';
@@ -30,9 +32,19 @@ $title = $title ?? 'HouseHub';
         </nav>
 
         <div class="nav-actions">
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <a href="logoutcontroller.php" class="btn btn-primary btn-small">
+            Logout
+            </a>
+        <?php else: ?>
             <a href="login.php" class="login-link">Login</a>
-            <a href="register.php" class="btn btn-primary btn-small">Join HouseHub</a>
-        </div>
+            <a href="register.php" class="btn btn-primary btn-small">
+            Join HouseHub
+        </a>
+
+    <?php endif; ?>
+
+</div>
     </div>
 </header>
 
