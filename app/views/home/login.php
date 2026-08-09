@@ -1,55 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
 
-<?php
-$title = "Login - HouseHub";
-ob_start();
+<head>
 
-?>
+    <meta charset="UTF-8">
 
-<section class="login-section">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <div class="container">
+    <title>HouseHub - Login</title>
 
-        <div style="max-width:800px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px;">
-            <!-- Login Form -->
-            <div class="col-lg-5 offset-lg-1">
-                <div class="login-card">
-                    <form action="logincontroller.php" method="POST" >
-                        <!-- Email -->
+    <style>
 
-                        <div class="mb-3">
-                            <label for="email"  class="form-label fw-semibold">
-                                Email
-                            </label>
+        * {
+            box-sizing: border-box;
+        }
 
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
-                        </div>
+        body {
+            margin: 0;
 
-                        <!-- Password -->
+            min-height: 100vh;
 
-                        <div class="mb-3">
-                            <label for="password" class="form-label fw-semibold">
-                                Password
-                            </label>
-                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
-                        </div>
-                        <!-- Login Button -->
+            display: flex;
 
-                        <button type="submit" name="login" class="btn btn-primary w-100 py-2 mt-2">Login</button>
-                    </form>
+            justify-content: center;
 
-                    <!-- Register -->
-                    <div class="text-center border-top mt-4 pt-3">
-                        <small class="text-muted">Don't have an account?</small>
-                        <a href="register.php" class="fw-semibold text-decoration-none">
-                            Register
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+            align-items: center;
+
+            background: #dff5e1;
+
+            font-family: Arial, sans-serif;
+        }
+
+        /* Login Box */
+
+        .login-box {
+            width: 400px;
+
+            background: white;
+
+            padding: 35px;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Logo */
+
+        .logo {
+            text-align: center;
+
+            font-size: 28px;
+
+            font-weight: bold;
+
+            color: #159447;
+
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+
+            color: #777;
+
+            margin-bottom: 28px;
+
+            font-size: 14px;
+        }
+
+        /* Heading */
+
+        h2 {
+            text-align: center;
+
+            margin-bottom: 25px;
+
+            color: #222;
+
+            font-size: 24px;
+        }
+
+        /* Form */
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-weight: bold;
+
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+
+            padding: 12px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 7px;
+
+            font-size: 14px;
+
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #159447;
+        }
+
+        /* Login Button */
+
+        .login-btn {
+            width: 100%;
+
+            padding: 13px;
+
+            border: none;
+
+            border-radius: 7px;
+
+            background: #159447;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            margin-top: 5px;
+        }
+
+        .login-btn:hover {
+            background: #117c3b;
+        }
+
+        /* Register */
+
+        .register {
+            text-align: center;
+
+            margin-top: 20px;
+
+            color: #555;
+
+            font-size: 14px;
+        }
+
+        .register a {
+            color: #159447;
+
+            text-decoration: none;
+
+            font-weight: bold;
+        }
+
+        .register a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="login-box">
+
+
+    <div class="logo">
+        HouseHub
     </div>
-</section>
-<?php
-$content = ob_get_clean();
-require __DIR__ . '/../layouts/main.php';
-?>
+
+
+    <div class="subtitle">
+        Home services made simple
+    </div>
+
+
+    <h2>
+        Login
+    </h2>
+
+
+    <form
+        action="logincontroller.php"
+        method="POST"
+    >
+
+
+        <!-- EMAIL -->
+
+        <div class="form-group">
+
+            <label for="email">
+                Email
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter your email"
+                required
+            >
+
+        </div>
+
+
+        <!-- PASSWORD -->
+
+        <div class="form-group">
+
+            <label for="password">
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                required
+            >
+
+        </div>
+
+
+        <!-- LOGIN -->
+
+        <button
+            type="submit"
+            class="login-btn"
+        >
+            Login
+        </button>
+
+
+    </form>
+
+
+    <!-- REGISTER -->
+
+    <div class="register">
+
+        Don't have an account?
+
+        <a href="register.php">
+            Register
+        </a>
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

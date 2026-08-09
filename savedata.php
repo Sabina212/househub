@@ -1,51 +1,94 @@
 <?php
+
 include("connection.php");
 
-if(isset($_POST['register']))
-{
-    // Get form data
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $email    = mysqli_real_escape_string($conn, $_POST['email']);
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $country  = mysqli_real_escape_string($conn, $_POST['country']);
-    $gender   = mysqli_real_escape_string($conn, $_POST['gender']);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    // Get data from registration form
+    $name = trim($_POST['name']);
+    $email = trim($_POST['email']);
+    $password = $_POST['password'];
+    $role = $_POST['role'];
+    $city = $_POST['city'];
+    $gender = $_POST['gender'];
+
 
     // Check if email already exists
-    $check = "SELECT * FROM user WHERE email='$email'";
-    $result = mysqli_query($conn, $check);
+    $check_sql = "SELECT id FROM user WHERE email = ?";
 
-    if(mysqli_num_rows($result) > 0)
-    {
+    $check_stmt = mysqli_prepare($conn, $check_sql);
+
+    mysqli_stmt_bind_param(
+        $check_stmt,
+        "s",
+        $email
+    );
+
+    mysqli_stmt_execute($check_stmt);
+
+    mysqli_stmt_store_result($check_stmt);
+
+
+    if (mysqli_stmt_num_rows($check_stmt) > 0) {
+
         echo "<script>
-                alert('Email already exists!');
-                window.location='register.php';
+                alert('Email already registered!');
+                window.location.href='register.php';
               </script>";
-    }
-    else
-    {
-        // Insert data into database
-        $sql = "INSERT INTO user(username, email, password, country, gender)
-                VALUES('$username', '$email', '$password', '$country', '$gender')";
 
-        if(mysqli_query($conn, $sql))
-        {
-            echo "<script>
-                    alert('Registration Successful!');
-                    window.location='login.php';
-                  </script>";
-        }
-        else
-        {
-            echo "Error: " . mysqli_error($conn);
-        }
+        exit();
     }
 
-    mysqli_close($conn);
+
+    // Hash password
+    $hashed_password = password_hash(
+        $password,
+        PASSWORD_DEFAULT
+    );
+
+
+    // Insert data
+    $sql = "INSERT INTO user
+            (name, email, password, role, city, gender)
+            VALUES (?, ?, ?, ?, ?, ?)";
+
+
+    $stmt = mysqli_prepare($conn, $sql);
+
+
+    mysqli_stmt_bind_param(
+        $stmt,
+        "ssssss",
+        $name,
+        $email,
+        $hashed_password,
+        $role,
+        $city,
+        $gender
+    );
+
+
+    // Execute
+    if (mysqli_stmt_execute($stmt)) {
+
+        echo "<script>
+                alert('Registration successful!');
+                window.location.href='login.php';
+              </script>";
+
+    } else {
+
+        echo "Registration failed: "
+             . mysqli_error($conn);
+
+    }
+
+
+    mysqli_stmt_close($stmt);
+    mysqli_stmt_close($check_stmt);
+
 }
-else
-{
-    header("Location: register.php");
-    exit();
-}
-echo " his is the change file" ;
+
+mysqli_close($conn);
+
 ?>

@@ -1,140 +1,509 @@
-<?php
-include("connection.php");
-?>
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>House Hub - Registration</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>HouseHub - Register</title>
+
 
     <style>
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:Arial, sans-serif;
+
+        * {
+            box-sizing: border-box;
         }
 
-        body{
-            background:#dff5e1;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
+
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background: #dff5e1;
+
+            font-family: Arial, sans-serif;
         }
 
-        .container{
-            width:400px;
-            background:#fff;
-            padding:30px;
-            border-radius:10px;
-            box-shadow:0 0 15px rgba(0,0,0,0.2);
+
+        /* Registration Box */
+
+        .register-box {
+
+            width: 400px;
+
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 5px 20px rgba(0,0,0,0.15);
         }
 
-        .container h2{
-            text-align:center;
-            margin-bottom:20px;
-            color:#2e8b57;
+
+        /* Heading */
+
+        h2 {
+
+            text-align: center;
+
+            color: #159447;
+
+            margin-top: 0;
+
+            margin-bottom: 25px;
         }
 
-        label{
-            font-weight:bold;
-            display:block;
-            margin-top:10px;
+
+        /* Form */
+
+        .form-group {
+
+            margin-bottom: 17px;
         }
 
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        select{
-            width:100%;
-            padding:10px;
-            margin-top:5px;
-            border:1px solid #ccc;
-            border-radius:5px;
+
+        label {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-weight: bold;
+
+            color: #333;
         }
 
-        .gender{
-            margin-top:8px;
+
+        /* Input */
+
+        input,
+        select {
+
+            width: 100%;
+
+            padding: 11px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 6px;
+
+            font-size: 14px;
+
+            outline: none;
         }
 
-        .gender input{
-            margin-right:5px;
+
+        input:focus,
+        select:focus {
+
+            border-color: #159447;
         }
 
-        .btn{
-            width:100%;
-            padding:12px;
-            background:#2e8b57;
-            color:white;
-            border:none;
-            border-radius:5px;
-            font-size:16px;
-            cursor:pointer;
-            margin-top:20px;
+
+        /* Register As */
+
+        .role-options {
+
+            display: flex;
+
+            gap: 25px;
+
+            margin-top: 8px;
         }
 
-        .btn:hover{
-            background:#256f47;
+
+        .role-options label {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            font-weight: normal;
+
+            margin: 0;
         }
 
-        p{
-            text-align:center;
-            margin-top:15px;
+
+        .role-options input {
+
+            width: auto;
         }
 
-        a{
-            text-decoration:none;
-            color:#2e8b57;
-            font-weight:bold;
+
+        /* Gender */
+
+        .gender-options {
+
+            display: flex;
+
+            gap: 20px;
+
+            margin-top: 8px;
         }
+
+
+        .gender-options label {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 5px;
+
+            font-weight: normal;
+
+            margin: 0;
+        }
+
+
+        .gender-options input {
+
+            width: auto;
+        }
+
+
+        /* Button */
+
+        .register-btn {
+
+            width: 100%;
+
+            padding: 12px;
+
+            border: none;
+
+            border-radius: 7px;
+
+            background: #159447;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            margin-top: 5px;
+        }
+
+
+        .register-btn:hover {
+
+            background: #117c3b;
+        }
+
+
+        /* Login */
+
+        .login {
+
+            text-align: center;
+
+            margin-top: 18px;
+
+            font-size: 14px;
+
+            color: #555;
+        }
+
+
+        .login a {
+
+            color: #159447;
+
+            font-weight: bold;
+
+            text-decoration: none;
+        }
+
+
+        .login a:hover {
+
+            text-decoration: underline;
+        }
+
+
     </style>
 
 </head>
+
+
 <body>
 
-<div class="container">
 
-    <h2>House Hub Registration</h2>
+<div class="register-box">
+
+
+    <h2>
+        HouseHub Registration
+    </h2>
+
 
     <form action="savedata.php" method="POST">
 
-        <label>Username</label>
-        <input type="text" name="username" placeholder="Enter Username" required>
 
-        <label>Email</label>
-        <input type="email" name="email" placeholder="Enter Email" required>
+        <!-- NAME -->
 
-        <label>Password</label>
-        <input type="password" name="password" placeholder="Enter Password" required>
+        <div class="form-group">
 
-        <label>Country</label>
-        <select name="country" required>
-            <option value="">--Select Country--</option>
-            <option value="Nepal">Nepal</option>
-            <option value="India">India</option>
-            <option value="China">China</option>
-            <option value="Bhutan">Bhutan</option>
-            <option value="Bangladesh">Bangladesh</option>
-        </select>
+            <label for="name">
+                Name
+            </label>
 
-        <label>Gender</label>
+            <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Enter your name"
+                required
+            >
 
-        <div class="gender">
-            <input type="radio" name="gender" value="Male" required> Male
-            <input type="radio" name="gender" value="Female"> Female
-            <input type="radio" name="gender" value="Other"> Other
         </div>
 
-        <input type="submit" name="register" value="Register" class="btn">
+
+        <!-- EMAIL -->
+
+        <div class="form-group">
+
+            <label for="email">
+                Email
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter your email"
+                required
+            >
+
+        </div>
+
+
+        <!-- PASSWORD -->
+
+        <div class="form-group">
+
+            <label for="password">
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                minlength="6"
+                required
+            >
+
+        </div>
+
+
+        <!-- REGISTER AS -->
+
+        <div class="form-group">
+
+            <label>
+                Register As
+            </label>
+
+
+            <div class="role-options">
+
+
+                <label>
+
+                    <input
+                        type="radio"
+                        name="role"
+                        value="customer"
+                        required
+                    >
+
+                    Customer
+
+                </label>
+
+
+                <label>
+
+                    <input
+                        type="radio"
+                        name="role"
+                        value="provider"
+                    >
+
+                    Service Provider
+
+                </label>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- CITY -->
+
+        <div class="form-group">
+
+            <label for="city">
+                City
+            </label>
+
+
+            <select
+                id="city"
+                name="city"
+                required
+            >
+
+                <option value="">
+                    Select City
+                </option>
+
+                <option value="Kathmandu">
+                    Kathmandu
+                </option>
+
+                <option value="Lalitpur">
+                    Lalitpur
+                </option>
+
+                <option value="Bhaktapur">
+                    Bhaktapur
+                </option>
+
+                <option value="Pokhara">
+                    Pokhara
+                </option>
+
+                <option value="Chitwan">
+                    Chitwan
+                </option>
+
+                <option value="Biratnagar">
+                    Biratnagar
+                </option>
+
+                <option value="Butwal">
+                    Butwal
+                </option>
+
+                <option value="Other">
+                    Other
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- GENDER -->
+
+        <div class="form-group">
+
+            <label>
+                Gender
+            </label>
+
+
+            <div class="gender-options">
+
+
+                <label>
+
+                    <input
+                        type="radio"
+                        name="gender"
+                        value="Male"
+                        required
+                    >
+
+                    Male
+
+                </label>
+
+
+                <label>
+
+                    <input
+                        type="radio"
+                        name="gender"
+                        value="Female"
+                    >
+
+                    Female
+
+                </label>
+
+
+                <label>
+
+                    <input
+                        type="radio"
+                        name="gender"
+                        value="Other"
+                    >
+
+                    Other
+
+                </label>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- REGISTER BUTTON -->
+
+        <button
+            type="submit"
+            class="register-btn"
+        >
+
+            Register
+
+        </button>
+
 
     </form>
 
-    <p>Already have an account? <a href="login.php">Login</a></p>
+
+    <!-- LOGIN -->
+
+    <div class="login">
+
+        Already have an account?
+
+        <a href="login.php">
+            Login
+        </a>
+
+    </div>
+
 
 </div>
 
+
 </body>
+
 </html>

@@ -153,6 +153,7 @@ table td{
 <li><a href="bookings.php">📅 Bookings</a></li>
 <li><a href="providers.php">👷 Providers</a></li>
 <li><a href="contact.php">📞 Contact</a></li>
+<li><a href="portfolio.php">📁 Portfolio</a></li>
 <li><a href="logout.php">🚪 Logout</a></li>
 </ul>
 
