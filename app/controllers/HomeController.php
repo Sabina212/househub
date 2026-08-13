@@ -1,6 +1,11 @@
 <?php
+
+require_once "connection.php";
+
+require_once "app/views/home/index.php";
 /**
  * HouseHub Home Controller
+ * 
  */
 class HomeController
 {
@@ -53,7 +58,7 @@ class HomeController
             require_once $connectionFile;
 
             if (isset($conn) && $conn instanceof mysqli) {
-                $sql = "SELECT id, email, profession, address, phone, about, profile_img
+                $sql = "SELECT id, about
                         FROM provider_profile
                         ORDER BY id DESC
                         LIMIT 6";

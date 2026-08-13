@@ -1,9 +1,13 @@
 <?php
-session_start();
-
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$user_name = $_SESSION['name'] ?? '';
+$role = $_SESSION['role'] ?? '';
 // Main HouseHub layout.
 // $title and $content are supplied by the view.
 $title = $title ?? 'HouseHub';
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,16 +37,25 @@ $title = $title ?? 'HouseHub';
 
         <div class="nav-actions">
         <?php if (isset($_SESSION['user_id'])): ?>
-            <a href="logoutcontroller.php" class="btn btn-primary btn-small">
-            Logout
-            </a>
-        <?php else: ?>
-            <a href="login.php" class="login-link">Login</a>
-            <a href="register.php" class="btn btn-primary btn-small">
-            Join HouseHub
-        </a>
+                <!-- USER DASHBOARD BUTTON -->
+                 <?php if ($role == 'customer'): ?>
+                <a href="dashboard-user.php" class="btn btn-user btn-small">
+                    Welcome,<?= htmlspecialchars($user_name) ?></a>
 
-    <?php endif; ?>
+                <?php elseif ($role == 'provider'): ?>
+                <a href="dashboard-provider.php" class="btn btn-user btn-small">
+                    Welcome,<?= htmlspecialchars($user_name) ?></a> 
+                    <?php endif; ?>
+                <!-- LOGOUT BUTTON -->
+
+                <a href="logoutcontroller.php" class="btn btn-primary btn-small">Logout</a>
+
+            <?php else: ?>
+                <a href="login.php" class="login-link">
+                    Login
+                </a>
+                <a href="register.php" class="btn btn-primary btn-small">Join HouseHub</a>
+            <?php endif; ?>
 
 </div>
     </div>
