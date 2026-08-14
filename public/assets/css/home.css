@@ -799,3 +799,195 @@ button, input, select { font: inherit; }
 .register a:hover {
     text-decoration: underline;
 }
+
+/* Provider Edit Profile Page CSS */
+.profile-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.profile-header {
+    margin-bottom: 30px;
+}
+
+.profile-header h1 {
+    margin-bottom: 8px;
+}
+
+.profile-header p {
+    color: #68736d;
+}
+
+.profile-form {
+    background: #ffffff;
+    padding: 35px;
+    border-radius: 14px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+    border: 1px solid #e3e9e5;
+}
+
+.form-section {
+    margin-bottom: 35px;
+}
+
+.form-section h2 {
+    color: #149447;
+    font-size: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e3e9e5;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #ccd6d0;
+    border-radius: 7px;
+    font-size: 15px;
+}
+
+.form-group textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #149447;
+}
+
+.readonly {
+    background: #f1f4f2;
+}
+
+.service-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(240px, 1fr));
+
+    gap: 12px;
+}
+
+.service-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 14px;
+
+    background: #f5f8f6;
+
+    border: 1px solid #dfe7e2;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+}
+
+.service-option:hover {
+    border-color: #149447;
+    background: #eef8f2;
+}
+
+.service-option input {
+    width: auto;
+}
+
+.profile-preview img {
+    width: 130px;
+    height: 130px;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+
+    border: 4px solid #e1f3e7;
+}
+
+.current-file {
+    background: #f5f8f6;
+
+    padding: 12px;
+
+    border-radius: 7px;
+
+    margin-bottom: 15px;
+}
+
+.current-file a {
+    color: #149447;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.help-text {
+    font-size: 13px;
+    color: #68736d;
+    margin-top: 6px;
+}
+
+.submit-area {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+
+    margin-top: 30px;
+}
+
+.cancel-btn,
+.save-btn {
+    padding: 12px 25px;
+
+    border-radius: 7px;
+
+    text-decoration: none;
+
+    border: none;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    font-size: 15px;
+}
+
+.cancel-btn {
+    background: #e7ece9;
+    color: #26332c;
+}
+
+.save-btn {
+    background: #149447;
+    color: white;
+}
+
+.save-btn:hover {
+    background: #107c3b;
+}
+
+.success-message {
+    background: #e8f7ee;
+    color: #107c3b;
+
+    padding: 15px;
+
+    border-radius: 8px;
+
+    margin-bottom: 20px;
+
+    border: 1px solid #b9e4c8;
+}

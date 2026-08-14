@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ob_start();
 include("connection.php");
 $user_name = $_SESSION['username'] ?? 'User';

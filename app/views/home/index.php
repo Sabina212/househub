@@ -2,6 +2,46 @@
 $title = 'HouseHub - Trusted Home Services';
 
 ob_start();
+// ======================================================
+// GET MAXIMUM 2 AVAILABLE SERVICE PROVIDERS
+// ======================================================
+
+$featuredProviders = [];
+$sql = "
+    SELECT
+        u.id,
+        u.name AS username,
+        u.city AS address,
+        pp.`profile-img` AS profile_img,
+        GROUP_CONCAT(
+            DISTINCT st.service_name
+            ORDER BY st.service_name
+            SEPARATOR ', '
+        ) AS profession
+
+    FROM `user` u
+    INNER JOIN provider_services ps
+        ON u.id = ps.provider_id
+    INNER JOIN service_type st
+        ON ps.service_type_id = st.id
+    LEFT JOIN provider_profile pp
+        ON u.id = pp.provider_id
+    WHERE u.role = 'provider'
+    GROUP BY
+        u.id,
+        u.name,
+        u.city,
+        pp.`profile-img`
+    ORDER BY u.id DESC
+    LIMIT 2
+";
+
+$result = mysqli_query($conn, $sql);
+if ($result) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $featuredProviders[] = $row;
+    }
+}
 ?>
 
 <main>
@@ -47,25 +87,43 @@ ob_start();
                 Available near you
             </div>
 
-            <div class="provider-mini">
-                <div class="avatar avatar-green">RK</div>
-                <div>
-                    <strong>Ramesh Kumar</strong>
-                    <small>Electrician · Kalanki</small>
-                    <span class="rating">★★★★★ <b>4.9</b></span>
+            <?php if (!empty($featuredProviders)): ?>
+
+    <?php foreach ($featuredProviders as $provider): ?>
+
+        <div class="provider-mini">
+
+            <?php if (!empty($provider['profile_img'])): ?>
+                <img src="uploads/providers/profile/<?= htmlspecialchars($provider['profile_img']) ?>" alt="<?= htmlspecialchars($provider['username']) ?>" class="avatar" style="object-fit: cover;">
+            <?php else: ?>
+                <div class="avatar avatar-green">
+                    <?= strtoupper(substr($provider['username'],0,2)) ?>
                 </div>
-                <span class="verified">✓</span>
+            <?php endif; ?>
+            
+            <div>
+                <strong>
+                    <?= htmlspecialchars($provider['username']) ?>
+                </strong>
+                <small>
+                    <?= htmlspecialchars($provider['profession']) ?>·<?= htmlspecialchars($provider['address']) ?>
+                </small>
+                <span class="rating">★★★★★</span>
             </div>
 
-            <div class="provider-mini">
-                <div class="avatar avatar-blue">LP</div>
-                <div>
-                    <strong>Laxman Prasad</strong>
-                    <small>Home Renovation · Sitapaila</small>
-                    <span class="rating">★★★★★ <b>4.8</b></span>
-                </div>
-                <span class="verified">✓</span>
-            </div>
+            <span class="verified">✓</span>
+        </div>
+    <?php endforeach; ?>
+
+<?php else: ?>
+    <div class="provider-mini">
+        <div class="avatar avatar-green">HH</div>
+        <div>
+            <strong> No providers yet</strong>
+            <small>New providers will appear here.</small>
+        </div>
+    </div>
+<?php endif; ?>
 
             <div class="hero-card-footer">
                 <span>Trusted by local households</span>

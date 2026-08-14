@@ -39,7 +39,7 @@ $title = 'HouseHub - Provider Dashboard';
 
         </div>
 
-        <a href="provider_profile.php"
+        <a href="provider-edit-profile.php"
            class="profile-button">
 
             Edit Profile
