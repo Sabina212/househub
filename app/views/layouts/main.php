@@ -2,13 +2,9 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-<<<<<<< HEAD
-
-
-=======
 $user_name = $_SESSION['name'] ?? '';
 $role = $_SESSION['role'] ?? '';
->>>>>>> c6f76c1f6622388bad9153b84baf871e094e54d8
+
 // Main HouseHub layout.
 // $title and $content are supplied by the view.
 $title = $title ?? 'HouseHub';

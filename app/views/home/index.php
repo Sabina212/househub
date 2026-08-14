@@ -5,43 +5,6 @@ ob_start();
 // ======================================================
 // GET MAXIMUM 2 AVAILABLE SERVICE PROVIDERS
 // ======================================================
-
-$featuredProviders = [];
-$sql = "
-    SELECT
-        u.id,
-        u.name AS username,
-        u.city AS address,
-        pp.`profile-img` AS profile_img,
-        GROUP_CONCAT(
-            DISTINCT st.service_name
-            ORDER BY st.service_name
-            SEPARATOR ', '
-        ) AS profession
-
-    FROM `user` u
-    INNER JOIN provider_services ps
-        ON u.id = ps.provider_id
-    INNER JOIN service_type st
-        ON ps.service_type_id = st.id
-    LEFT JOIN provider_profile pp
-        ON u.id = pp.provider_id
-    WHERE u.role = 'provider'
-    GROUP BY
-        u.id,
-        u.name,
-        u.city,
-        pp.`profile-img`
-    ORDER BY u.id DESC
-    LIMIT 2
-";
-
-$result = mysqli_query($conn, $sql);
-if ($result) {
-    while ($row = mysqli_fetch_assoc($result)) {
-        $featuredProviders[] = $row;
-    }
-}
 ?>
 
 <main>
@@ -140,22 +103,32 @@ if ($result) {
                 <span class="section-label">OUR SERVICES</span>
                 <h2>What can we help you with?</h2>
             </div>
-            <a href="service.php" class="text-link">View all services →</a>
         </div>
 
         <div class="service-grid">
-            <?php foreach ($services as $service): ?>
-                <a href="service.php?category=<?= urlencode($service['name']) ?>" class="service-card">
-                    <div class="service-icon"><?= $service['icon'] ?></div>
-                    <div>
-                        <h3><?= htmlspecialchars($service['name']) ?></h3>
-                        <p><?= htmlspecialchars($service['description']) ?></p>
-                        <span><?= htmlspecialchars($service['price']) ?></span>
-                    </div>
-                    <b class="arrow">↗</b>
-                </a>
-            <?php endforeach; ?>
-        </div>
+
+    <?php foreach ($services as $service): ?>
+
+        <a href="service.php?category=<?= urlencode($service['name']) ?>"
+           class="service-card">
+
+            <div class="service-icon">
+                <?= $service['icon'] ?>
+            </div>
+
+            <div>
+                <h3>
+                    <?= htmlspecialchars($service['name']) ?>
+                </h3>
+            </div>
+
+            <b class="arrow">↗</b>
+
+        </a>
+
+    <?php endforeach; ?>
+
+</div>
     </div>
 </section>
 
@@ -175,8 +148,8 @@ if ($result) {
                     <article class="provider-card">
                         <div class="provider-image">
                             <?php if (!empty($provider['profile_img'])): ?>
-                                <img src="uploads/<?= htmlspecialchars($provider['profile_img']) ?>"
-                                     alt="<?= htmlspecialchars($provider['username']) ?>">
+                                <img src="uploads/providers/profile/<?= htmlspecialchars($provider['profile_img']) ?>"
+     alt="<?= htmlspecialchars($provider['username']) ?>">
                             <?php else: ?>
                                 <div class="avatar-large">
                                     <?= strtoupper(substr($provider['username'], 0, 1)) ?>
@@ -200,18 +173,6 @@ if ($result) {
                     </article>
                 <?php endforeach; ?>
             <?php else: ?>
-                <article class="provider-card demo-provider">
-                    <div class="provider-image"><div class="avatar-large">R</div></div>
-                    <div class="provider-info">
-                        <div class="provider-title">
-                            <div><h3>Ramesh</h3><p>Internet & WiFi Setup</p></div>
-                            <span class="verified-badge">✓</span>
-                        </div>
-                        <p class="provider-location">⌖ Kalanki</p>
-                        <p class="provider-about">Home network and WiFi setup services from a local professional.</p>
-                        <a href="profile.php" class="provider-link">View profile →</a>
-                    </div>
-                </article>
             <?php endif; ?>
         </div>
     </div>
