@@ -1,77 +1,112 @@
 <?php
 
-require_once "connection.php";
+require_once __DIR__ . '/../../connection.php';
 
-require_once "app/views/home/index.php";
-/**
- * HouseHub Home Controller
- * 
- */
 class HomeController
 {
+    private mysqli $conn;
+
+    public function __construct()
+    {
+        global $conn;
+
+        $this->conn = $conn;
+    }
+
     public function index(): void
     {
-        $services = [
-            [
-                'name' => 'Electrician',
-                'icon' => '⚡',
-                'description' => 'Wiring, switches, sockets, lights and electrical repairs.',
-                'price' => 'From Rs. 500'
-            ],
-            [
-                'name' => 'Plumber',
-                'icon' => '🔧',
-                'description' => 'Pipe fitting, leakage repair, taps, sinks and bathroom work.',
-                'price' => 'From Rs. 400'
-            ],
-            [
-                'name' => 'Mechanic',
-                'icon' => '🔩',
-                'description' => 'Reliable vehicle inspection, repair and maintenance services.',
-                'price' => 'From Rs. 700'
-            ],
-            [
-                'name' => 'Washing Machine',
-                'icon' => '🧺',
-                'description' => 'Washing machine diagnosis, repair, installation and servicing.',
-                'price' => 'From Rs. 500'
-            ],
-            [
-                'name' => 'Carpenter',
-                'icon' => '🪚',
-                'description' => 'Furniture repair, custom work, doors and wooden installations.',
-                'price' => 'From Rs. 600'
-            ],
-            [
-                'name' => 'Internet & WiFi',
-                'icon' => '📶',
-                'description' => 'Router installation, WiFi setup and home network support.',
-                'price' => 'From Rs. 350'
-            ],
+        $iconMap = [
+            'Electrician' => '⚡',
+            'Plumber' => '🚰',
+            'Networking Service Provider' => '🌐',
+            'Washing Machine Repairer' => '🧺',
+            'Painter' => '🎨',
+            'Carpenter' => '🪛',
+            'Automobile Mechanic' => '🔧',
         ];
 
+        $services = [];
         $featuredProviders = [];
 
-        // Use existing database when available.
-        $connectionFile = __DIR__ . '/../../connection.php';
-        if (file_exists($connectionFile)) {
-            require_once $connectionFile;
+        $sql = "
+            SELECT id, service_name
+            FROM service_type
+            ORDER BY id ASC
+        ";
 
-            if (isset($conn) && $conn instanceof mysqli) {
-                $sql = "SELECT id, about
-                        FROM provider_profile
-                        ORDER BY id DESC
-                        LIMIT 6";
+        $result = mysqli_query($this->conn, $sql);
 
-                $result = mysqli_query($conn, $sql);
+        if ($result) {
 
-                if ($result) {
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        $featuredProviders[] = $row;
-                    }
-                }
+            while ($row = mysqli_fetch_assoc($result)) {
+
+                $services[] = [
+                    'id'   => $row['id'],
+                    'name' => $row['service_name'],
+                    'icon' => $iconMap[$row['service_name']] ?? '🔧'
+                ];
+
             }
         }
+
+        // Other queries...
+        // ==============================
+        // FETCH FEATURED PROVIDERS
+        // ==============================
+
+        $sql = "
+            SELECT
+                u.id,
+                u.name AS username,
+                u.city AS address,
+                pp.`profile-img` AS profile_img,
+
+                GROUP_CONCAT(
+                    DISTINCT st.service_name
+                    ORDER BY st.service_name
+                    SEPARATOR ', '
+                ) AS profession,
+
+                MAX(pp.about) AS about
+
+            FROM `user` u
+
+            INNER JOIN provider_services ps
+                ON u.id = ps.provider_id
+
+            INNER JOIN service_type st
+                ON ps.service_type_id = st.id
+
+            LEFT JOIN provider_profile pp
+                ON u.id = pp.provider_id
+
+            WHERE u.role = 'provider'
+
+            GROUP BY
+                u.id,
+                u.name,
+                u.city,
+                pp.`profile-img`
+
+            ORDER BY u.id DESC
+
+            LIMIT 6
+        ";
+
+        $result = mysqli_query($this->conn, $sql);
+
+        if ($result) {
+
+            while ($row = mysqli_fetch_assoc($result)) {
+                $featuredProviders[] = $row;
+            }
+
+        } else {
+
+            die("Provider query failed: " . mysqli_error($conn));
+
+        }
+
 
         require __DIR__ . '/../views/home/index.php';
     }
