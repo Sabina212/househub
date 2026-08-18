@@ -1,634 +1,351 @@
-<?php
-
-include("connection.php");
-
-$search = "";
-
-if (isset($_GET['search'])) {
-    $search = trim($_GET['search']);
-}
-
-if ($search == "") {
-    header("Location: index.php");
-    exit();
-}
-
-/*
-    Search service name, category and provider name
-*/
-
-$search_safe = mysqli_real_escape_string($conn, $search);
-
-$sql = "SELECT *
-        FROM services
-        WHERE service_name LIKE '%$search_safe%'
-        OR category LIKE '%$search_safe%'
-        OR provider_name LIKE '%$search_safe%'
-        ORDER BY id DESC";
-
-$result = mysqli_query($conn, $sql);
-
-if (!$result) {
-    die("Database Error: " . mysqli_error($conn));
-}
-
-?>
-
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>HouseHub - Search Results</title>
+    <title>HouseHub Services</title>
 
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8f9fa;
+            margin: 0;
+            padding: 25px;
+        }
 
-        * {
+        .filter-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .filter-group {
+            flex: 1;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
             box-sizing: border-box;
         }
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #ffffff;
-            color: #17231d;
-        }
-
-        /* HEADER */
-
-        .header {
-            height: 65px;
-            border-bottom: 1px solid #eeeeee;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 55px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        .logo-box {
-            width: 35px;
-            height: 35px;
-            background: #159447;
-            color: white;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        .logo-text span {
-            color: #159447;
-        }
-
-        .nav {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
-
-        .nav a {
-            text-decoration: none;
-            color: #59635e;
-            font-size: 14px;
-        }
-
-        .nav a:hover {
-            color: #159447;
-        }
-
-        .login {
-            color: #17231d !important;
-            font-weight: bold;
-        }
-
-        .join {
-            background: #159447;
-            color: white !important;
-            padding: 12px 18px;
-            border-radius: 10px;
-            font-weight: bold;
-        }
-
-        /* SEARCH */
-
-        .search-container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 35px auto;
-        }
-
-        .search-form {
-            width: 650px;
-            height: 55px;
-            display: flex;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-        }
-
-        .search-form input {
-            flex: 1;
-            border: none;
-            outline: none;
-            padding: 0 20px;
-            font-size: 16px;
-        }
-
-        .search-form button {
-            width: 140px;
-            border: none;
-            background: #159447;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* RESULTS */
-
-        .content {
-            width: 90%;
-            max-width: 1200px;
-            margin: 45px auto;
-        }
-
-        .result-title {
-            font-size: 24px;
-            margin-bottom: 35px;
-        }
-
-        .result-title span {
-            color: #159447;
-        }
-
-        .main {
-            display: flex;
-            gap: 45px;
-        }
-
-        /* CATEGORIES */
-
-        .categories {
-            width: 190px;
-            flex-shrink: 0;
-        }
-
-        .categories h4 {
-            font-size: 12px;
-            color: #87938c;
-            margin-bottom: 25px;
-        }
-
-        .categories a {
-            display: block;
-            text-decoration: none;
-            color: #274d3a;
-            font-size: 14px;
+        .result-count {
             margin-bottom: 20px;
-        }
-
-        .categories a:hover {
-            color: #159447;
-        }
-
-        /* SERVICES */
-
-        .services-area {
-            flex: 1;
-        }
-
-        .services-area h2 {
-            margin-top: 0;
-            font-size: 20px;
-            margin-bottom: 25px;
+            color: #333;
         }
 
         .services {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
         }
 
         .service-card {
-            border: 1px solid #eeeeee;
-            border-radius: 12px;
-            padding: 20px;
             background: white;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.06);
-            transition: 0.2s;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            transition: 0.3s;
         }
 
         .service-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.10);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
         }
 
-        .service-icon {
-            width: 60px;
-            height: 60px;
-            background: #e9f8ee;
-            color: #159447;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            margin-bottom: 15px;
+        .service-card img {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
         }
 
-        .service-name {
-            font-size: 17px;
-            font-weight: bold;
-            margin-bottom: 10px;
+        .service-info {
+            padding: 18px;
         }
 
-        .category {
-            font-size: 13px;
-            color: #777;
-            margin-bottom: 8px;
+        .service-info h3 {
+            margin: 0 0 8px;
+            color: #111;
         }
 
-        .provider {
-            font-size: 14px;
-            color: #444;
-            margin-bottom: 12px;
+        .service-info p {
+            color: #666;
+            margin: 5px 0;
         }
 
-        .price {
-            color: #f4512a;
-            font-size: 16px;
-            font-weight: bold;
+        .book-btn {
+            margin-top: 12px;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        .book-btn:hover {
+            background: #0056b3;
         }
 
         .no-result {
-            padding: 40px;
-            background: #f8faf9;
-            border-radius: 12px;
-            color: #666;
-            font-size: 17px;
+            display: none;
+            text-align: center;
+            color: #777;
+            padding: 30px;
         }
 
-        /* RESPONSIVE */
-
-        @media(max-width: 900px) {
-
-            .header {
-                padding: 0 20px;
-            }
-
-            .nav {
-                gap: 12px;
-            }
-
-            .search-form {
-                width: 100%;
-            }
-
-            .main {
+        @media(max-width: 700px) {
+            .filter-box {
                 flex-direction: column;
             }
-
-            .categories {
-                width: 100%;
-            }
-
-            .services {
-                grid-template-columns: repeat(2, 1fr);
-            }
         }
-
-        @media(max-width: 600px) {
-
-            .nav a {
-                display: none;
-            }
-
-            .services {
-                grid-template-columns: 1fr;
-            }
-
-            .search-form button {
-                width: 110px;
-            }
-        }
-
     </style>
-
 </head>
 
 <body>
 
+    <div class="filter-box">
 
-<!-- HEADER -->
-
-<div class="header">
-
-    <div class="logo">
-
-        <div class="logo-box">
-            H
+        <div class="filter-group">
+            <label>Search Services</label>
+            <input
+                type="text"
+                id="search"
+                placeholder="Search services..."
+                onkeyup="filterServices()"
+            >
         </div>
 
-        <div class="logo-text">
-            House<span>Hub</span>
+        <div class="filter-group">
+            <label>Filter by Category</label>
+
+            <select id="category" onchange="filterServices()">
+                <option value="all">All Categories</option>
+                <option value="Electrical">Electrical</option>
+                <option value="Plumbing">Plumbing</option>
+                <option value="Cleaning">Cleaning</option>
+                <option value="Painting">Painting</option>
+                <option value="Carpentry">Carpentry</option>
+                <option value="Appliance">Appliance Repair</option>
+                <option value="Renovation">Home Renovation</option>
+            </select>
         </div>
 
     </div>
 
 
-    <div class="nav">
-
-        <a href="index.php">Home</a>
-
-        <a href="service.php">Services</a>
-
-        <a href="providers.php">Providers</a>
-
-        <a href="#">How It Works</a>
-
-        <a href="login.php" class="login">Login</a>
-
-        <a href="register.php" class="join">
-            Join HouseHub
-        </a>
-
-    </div>
-
-</div>
-
-
-<!-- SEARCH -->
-
-<div class="search-container">
-
-    <form action="search.php" method="GET" class="search-form">
-
-        <input
-            type="text"
-            name="search"
-            value="<?php echo htmlspecialchars($search); ?>"
-            placeholder="What service do you need?"
-            required
-        >
-
-        <button type="submit">
-            Search
-        </button>
-
-    </form>
-
-</div>
-
-
-<!-- RESULTS -->
-
-<div class="content">
-
-    <div class="result-title">
-
-        Available Results for
-        "<span><?php echo htmlspecialchars($search); ?></span>"
-
+    <div class="result-count">
+        <span id="count">7</span> services found
     </div>
 
 
-    <div class="main">
+    <div class="services" id="serviceList">
 
+        <!-- Electrical -->
+        <div class="service-card"
+             data-name="Electrical Renovation"
+             data-category="Electrical">
 
-        <!-- CATEGORIES -->
+            <img src="images/electrical.jpg" alt="Electrical Service">
 
-        <div class="categories">
+            <div class="service-info">
+                <h3>Electrical Renovation</h3>
+                <p>विद्युतीय नवीकरण</p>
+                <p>Electrical installation and repair services.</p>
 
-            <h4>CATEGORIES</h4>
-
-            <a href="search.php?search=Home Repairs">
-                Home Repairs
-            </a>
-
-            <a href="search.php?search=Plumbing">
-                Plumbing
-            </a>
-
-            <a href="search.php?search=Automobile">
-                Automobile
-            </a>
-
-            <a href="search.php?search=Hire a Driver">
-                Hire a Driver
-            </a>
-
-            <a href="search.php?search=Tech and Digital Services">
-                Tech and Digital Services
-            </a>
-
-            <a href="search.php?search=Personal Service">
-                Personal Service
-            </a>
-
-            <a href="search.php?search=Pet Care">
-                Pet Care
-            </a>
-
-            <a href="search.php?search=Professional Services">
-                Professional Services
-            </a>
-
-            <a href="search.php?search=Electrical">
-                Electrical
-            </a>
-
-            <a href="search.php?search=Carpentry">
-                Carpentry
-            </a>
-
+                <button class="book-btn">
+                    Book Service
+                </button>
+            </div>
         </div>
 
 
-        <!-- SERVICES -->
+        <!-- Plumbing -->
+        <div class="service-card"
+             data-name="Plumbing Repair"
+             data-category="Plumbing">
 
-        <div class="services-area">
+            <img src="images/plumbing.jpg" alt="Plumbing Service">
 
-            <h2>Services</h2>
+            <div class="service-info">
+                <h3>Plumbing Repair</h3>
+                <p>प्लम्बिङ मर्मत</p>
+                <p>Pipe installation, leakage repair and plumbing work.</p>
 
-
-            <?php
-
-            if (mysqli_num_rows($result) > 0) {
-
-            ?>
-
-                <div class="services">
-
-                    <?php
-
-                    while ($row = mysqli_fetch_assoc($result)) {
-
-                    ?>
-
-                        <div class="service-card">
-
-                            <div class="service-icon">
-
-                                <?php
-
-                                $category = strtolower(
-                                    $row['category']
-                                );
-
-                                if (
-                                    strpos(
-                                        $category,
-                                        'electric'
-                                    ) !== false
-                                ) {
-
-                                    echo "⚡";
-
-                                } elseif (
-                                    strpos(
-                                        $category,
-                                        'plumb'
-                                    ) !== false
-                                ) {
-
-                                    echo "🔧";
-
-                                } elseif (
-                                    strpos(
-                                        $category,
-                                        'carp'
-                                    ) !== false
-                                ) {
-
-                                    echo "🪚";
-
-                                } else {
-
-                                    echo "🛠️";
-
-                                }
-
-                                ?>
-
-                            </div>
+                <button class="book-btn">
+                    Book Service
+                </button>
+            </div>
+        </div>
 
 
-                            <div class="service-name">
+        <!-- Cleaning -->
+        <div class="service-card"
+             data-name="Home Cleaning"
+             data-category="Cleaning">
 
-                                <?php
+            <img src="images/cleaning.jpg" alt="Cleaning Service">
 
-                                echo htmlspecialchars(
-                                    $row['service_name']
-                                );
+            <div class="service-info">
+                <h3>Home Cleaning</h3>
+                <p>घर सरसफाई</p>
+                <p>Professional home and room cleaning services.</p>
 
-                                ?>
-
-                            </div>
-
-
-                            <div class="category">
-
-                                Category:
-                                <?php
-
-                                echo htmlspecialchars(
-                                    $row['category']
-                                );
-
-                                ?>
-
-                            </div>
+                <button class="book-btn">
+                    Book Service
+                </button>
+            </div>
+        </div>
 
 
-                            <div class="provider">
+        <!-- Painting -->
+        <div class="service-card"
+             data-name="House Painting"
+             data-category="Painting">
 
-                                Provider:
-                                <strong>
+            <img src="images/painting.jpg" alt="Painting Service">
 
-                                    <?php
+            <div class="service-info">
+                <h3>House Painting</h3>
+                <p>घर रंगाउने सेवा</p>
+                <p>Interior and exterior house painting services.</p>
 
-                                    echo htmlspecialchars(
-                                        $row['provider_name']
-                                    );
-
-                                    ?>
-
-                                </strong>
-
-                            </div>
+                <button class="book-btn">
+                    Book Service
+                </button>
+            </div>
+        </div>
 
 
-                            <div class="price">
+        <!-- Carpentry -->
+        <div class="service-card"
+             data-name="Carpentry Service"
+             data-category="Carpentry">
 
-                                From Rs
-                                <?php
+            <img src="images/carpentry.jpg" alt="Carpentry Service">
 
-                                echo htmlspecialchars(
-                                    $row['price']
-                                );
+            <div class="service-info">
+                <h3>Carpentry Service</h3>
+                <p>काठको काम</p>
+                <p>Furniture repair, doors, windows and woodwork.</p>
 
-                                ?>
+                <button class="book-btn">
+                    Book Service
+                </button>
+            </div>
+        </div>
 
-                            </div>
 
-                        </div>
+        <!-- Appliance -->
+        <div class="service-card"
+             data-name="Appliance Repair"
+             data-category="Appliance">
 
-                    <?php
+            <img src="images/appliance.jpg" alt="Appliance Repair">
 
-                    }
+            <div class="service-info">
+                <h3>Appliance Repair</h3>
+                <p>उपकरण मर्मत</p>
+                <p>Repair services for household electrical appliances.</p>
 
-                    ?>
+                <button class="book-btn">
+                    Book Service
+                </button>
+            </div>
+        </div>
 
-                </div>
 
-            <?php
+        <!-- Renovation -->
+        <div class="service-card"
+             data-name="Home Renovation"
+             data-category="Renovation">
 
+            <img src="images/renovation.jpg" alt="Home Renovation">
+
+            <div class="service-info">
+                <h3>Home Renovation</h3>
+                <p>घर नवीकरण</p>
+                <p>Complete home renovation and improvement services.</p>
+
+                <button class="book-btn">
+                    Book Service
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="no-result" id="noResult">
+        No services found.
+    </div>
+
+
+    <script>
+
+        function filterServices() {
+
+            let search =
+                document.getElementById("search").value.toLowerCase();
+
+            let category =
+                document.getElementById("category").value;
+
+            let cards =
+                document.querySelectorAll(".service-card");
+
+            let count = 0;
+
+            cards.forEach(function(card) {
+
+                let name =
+                    card.getAttribute("data-name").toLowerCase();
+
+                let cardCategory =
+                    card.getAttribute("data-category");
+
+                let searchMatch =
+                    name.includes(search);
+
+                let categoryMatch =
+                    category === "all" ||
+                    cardCategory === category;
+
+                if (searchMatch && categoryMatch) {
+
+                    card.style.display = "block";
+                    count++;
+
+                } else {
+
+                    card.style.display = "none";
+
+                }
+
+            });
+
+            document.getElementById("count").innerText = count;
+
+            if (count === 0) {
+                document.getElementById("noResult").style.display = "block";
             } else {
-
-            ?>
-
-                <div class="no-result">
-
-                    No services found for
-
-                    <strong>
-                        "<?php echo htmlspecialchars($search); ?>"
-                    </strong>
-
-                    <br><br>
-
-                    Try searching for:
-                    electrician, plumbing, carpenter,
-                    automobile, repair, etc.
-
-                </div>
-
-            <?php
-
+                document.getElementById("noResult").style.display = "none";
             }
+        }
 
-            ?>
-
-        </div>
-
-    </div>
-
-</div>
-
+    </script>
 
 </body>
 </html>

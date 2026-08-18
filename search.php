@@ -1,13 +1,5 @@
 <?php
-/**
- * HouseHub - Front Controller
- *
- * MVC entry point:
- * Request -> Controller -> View -> Layout
- */
-
-require  __DIR__ . '/app/veiws/home/search.php';
-
-$controller = new HomeController();
-$controller->index();
+// Root shim for `app/views/home/search.php` so web requests to
+// /search.php continue to work after moving views.
+include __DIR__ . '/app/views/home/search.php';
 ?>
